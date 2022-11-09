@@ -1,49 +1,44 @@
 import axios from "axios"
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 function CountriesList() {
- 
+
+  const [countryNameList, setCountryNameList] = useState([])
+  const { alpha3Code } = useParams
+
+  useEffect(() => {
+    axios.get("https://ih-countries-api.herokuapp.com/countries")
+      .then((response) => {
+        setCountryNameList(response.data)
+      }).catch((err) => {
+        console.log(err)
+      })
+  }, [alpha3Code])
+
 
   return (
-    <div>
-
-      {/* {countries.map((eachCountry) => {
-        return (
-          <p key={eachCountry.alpha3code}>
-            <Link to={`/country/${eachCountry.alpha3code}`}>{eachCountry.alpha3code}</Link>
-          </p>
-
-
-        )
-      })}
- */}
-
-      <div className="container">
-        <div className="row">
-          <div className="col-5" style="max-height: 90vh; overflow: scroll">
-            <div className="list-group">
-              <a className="list-group-item list-group-item-action" href="/ABW">🇦🇼 Aruba</a>
-              <a className="list-group-item list-group-item-action" href="/AFG">🇦🇫 Afghanistan</a>
-              <a className="list-group-item list-group-item-action" href="/AGO">🇦🇴 Angola</a>
-              <a className="list-group-item list-group-item-action" href="/AIA">🇦🇮 Anguilla</a>
-              <a className="list-group-item list-group-item-action" href="/ALA">🇦🇽 Åland Islands</a>
-              <a className="list-group-item list-group-item-action" href="/ALB">🇦🇱 Albania</a>
-              <a className="list-group-item list-group-item-action" href="/AND">🇦🇩 Andorra</a>
-              <a className="list-group-item list-group-item-action" href="/ARE">🇦🇪 United Arab Emirates</a>
-              <a className="list-group-item list-group-item-action" href="/ARG">🇦🇷 Argentina</a>
-              <a className="list-group-item list-group-item-action" href="/ARM">🇦🇲 Armenia</a>
-              <a className="list-group-item list-group-item-action" href="/ASM">🇦🇸 American Samoa</a>
-              <a className="list-group-item list-group-item-action" href="/ATA">🇦🇶 Antarctica</a>
-              <a className="list-group-item list-group-item-action" href="/FLK">🇫🇰 Falkland Islands</a>
-              <a className="list-group-item list-group-item-action active" href="/FRA">🇫🇷 France</a>
-              <a className="list-group-item list-group-item-action" href="/ZWE">🇿🇼 Zimbabwe</a>
-            </div>
+    < div className="container" >
+      <div className="row">
+        <div className="col-5" style={{maxHeight: "90vh", overflow: "scroll"}}>
+          <div className="list-group">
+            {countryNameList.map((eachCountry) => {
+              return (
+                <div key={eachCountry._id}>
+                  <Link to={`/countries/${eachCountry.alpha3code}`}
+                    className="list-group-item list-group-item-action">
+                    <img src={`https://flagpedia.net/data/flags/icon/72x54/${eachCountry.alpha2Code.toLowerCase()}.png`} alt="country-flag"/>
+                    <h6>{eachCountry.name.common}</h6>
+                  </Link>
+                </div >
+              );
+            })}
           </div>
         </div>
       </div>
     </div>
   );
 }
+
 
 export default CountriesList
